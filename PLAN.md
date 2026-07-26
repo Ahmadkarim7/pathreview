@@ -1,7 +1,7 @@
 ## Solution plan
 
 **Issue:** #68 — Add a safety event count to the health check endpoint
-https://github.com/ascherj/pathreview/issues/68
+https://github.com/Ahmadkarim7/pathreview/issues/68
 
 ### Understand
 The `/health` endpoint already has a `safety_events_last_hour` key in its response, but it's
