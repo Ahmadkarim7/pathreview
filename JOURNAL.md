@@ -43,17 +43,24 @@ hardcoded and never wired up to `SafetyMonitor`.
 
 ## Week 8 — Reproduction & solution planning
 
-**Reproduction commit link:** []
+**Reproduction commit link:** https://github.com/Ahmadkarim7/pathreview/commit/ff9e3af
 
 **Reproduction summary:**
-Logged a safety event via SafetyMonitor.log_event() and confirmed /health still
-returns safety_events_last_hour: 0 — the field exists but is hardcoded and was
-never wired up to the actual monitoring data.
+Logged a safety event directly via SafetyMonitor.log_event(), confirmed Redis stored
+the count (2), then immediately hit /health and found safety_events_last_hour still
+returned 0 — proving the field is hardcoded in api/routes/health.py and was never
+wired up to SafetyMonitor.
 
-**PLAN.md link:** [link to PLAN.md in your fork]
+**PLAN.md link:** https://github.com/Ahmadkarim7/pathreview/blob/fix/68-health-check-safety-event-count/PLAN.md
 
+**Walkthrough video (recommended):** (skipped)
 
 **Blockers or open questions:**
 Confirming with mentor whether another contributor (RadRebelSam) already has this
-issue in progress. Also flagged in PLAN.md that a fully accurate hourly count needs
-a bigger Redis storage change than the issue's estimate suggests.
+issue in progress, since they commented on #68 with a nearly identical branch name.
+Also noted in PLAN.md: a fully accurate hourly count needs a bigger Redis storage
+change (sorted sets vs. flat counters) than the issue's 2–4hr estimate suggests.
+Unrelated to this issue but observed during testing: /health's postgres and redis
+dependency checks are currently broken (SQLAlchemy text() issue and a missing
+settings.redis_host attribute) — flagging in case it's relevant, but not touching
+it since it's out of scope for #68.
