@@ -125,3 +125,68 @@ Mentor confirmed earlier this week that overlap with RadRebelSam on #68 is fine
 for this course repo, so I proceeded. I've requested a review on the draft PR via
 Slack but have not received feedback back yet as of this entry — will incorporate
 any review comments before marking the PR ready for review.
+
+
+## Week 10 — Iteration & reflection
+ 
+### Reviewer feedback
+ 
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+ 
+**Summary of feedback:**
+No review has come in yet. I requested a review on the draft PR via Slack back in
+Week 9 and haven't heard back as of this entry.
+ 
+**How you responded:**
+N/A — nothing to respond to yet. If feedback comes in after this entry, I'll
+incorporate it and note the changes, but the PR is currently sitting as-is.
+ 
+---
+ 
+### Reflection
+ 
+**What was harder than you expected?**
+Python was the harder part for me overall — I'm not very familiar with the
+language, so things that probably would've been quick for someone with a Python
+background (the Redis sorted-set rewrite in `safety/monitoring.py`, wiring up
+FastAPI's dependency injection in `api/deps.py`, getting the sync-vs-async Redis
+client distinction right) took real time and trial and error. The mypy catch on
+the async client silently returning 0 forever is a good example — I wouldn't have
+caught that on my own without leaning on the tooling.
+ 
+**What did you learn about working in a large codebase?**
+The biggest difference from building my own project is how much of the work is
+scoping what *not* to touch. I found two real pre-existing bugs in `/health` (the
+broken Postgres check and the missing `settings.redis_host` attribute) while
+testing my fix, and the instinct is to just fix them since I'm already in there.
+But they were out of scope for #68, so I flagged them in the journal and PR
+description and worked around them in test fixtures instead. I also had to deal
+with someone else potentially working the same issue (RadRebelSam's nearly
+identical branch), which isn't something that comes up when you're the only one
+touching your own repo — it added a whole coordination step (checking with a
+mentor) that had nothing to do with the code itself.
+ 
+**How did AI tools help — and where did they fall short?**
+AI tools were most useful for translating what I understood conceptually
+(windowed counts, sorted sets vs. flat counters) into working Python syntax,
+especially early on when I wasn't confident in the language. Where they fell
+short was catching the subtler bugs — the sync/async Redis client issue was
+something mypy caught, not something I'd have thought to ask an AI tool to check
+for, since on the surface the async version looked like it should work fine.
+ 
+**What would you do differently if you started over?**
+I'd pick an issue that touched the RAG system, model tuning, or the multi-agent
+tooling instead of the health check endpoint. The safety/health work was a good
+intro issue for getting comfortable with the codebase and with Python, but it
+didn't get me into the parts of PathReview I'm actually most curious about. If I
+started over, I'd probably spend more time in Week 7 scanning the issue list
+specifically for something in `rag/` or `agent/`, even if it meant a steeper
+learning curve.
+ 
+**What are you most proud of from this module?**
+Getting through the Python unfamiliarity and still landing a real fix — not just
+a patch, but an actual redesign of the storage logic (counter → sorted set) that
+fixed a bug I found through testing (the windowing was never enforced) rather
+than just the bug the issue described. I came out of this wanting to keep doing
+open source contributions regularly, maybe about once a week, which wasn't
+something I expected going in.
